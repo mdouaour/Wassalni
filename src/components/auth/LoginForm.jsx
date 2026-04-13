@@ -1,12 +1,14 @@
 import { useState } from 'react';
 import { Link, useNavigate } from 'react-router-dom';
 import { useAuthStore } from '../../stores/authStore';
+import { useTranslation } from 'react-i18next';
 import Input from '../common/Input';
 import Button from '../common/Button';
 
 export default function LoginForm() {
   const navigate = useNavigate();
   const { signIn, loading, error, clearError } = useAuthStore();
+  const { t } = useTranslation();
   const [email, setEmail] = useState('');
   const [password, setPassword] = useState('');
 
@@ -22,8 +24,8 @@ export default function LoginForm() {
   return (
     <div className="max-w-md mx-auto">
       <div className="text-center mb-6">
-        <h1 className="text-2xl font-bold text-gray-800">Welcome Back</h1>
-        <p className="text-gray-500 mt-1">Sign in to your WASALNI account</p>
+        <h1 className="text-2xl font-bold text-gray-800">{t('auth.welcomeBack')}</h1>
+        <p className="text-gray-500 mt-1">{t('auth.signInSubtitle')}</p>
       </div>
 
       <form onSubmit={handleSubmit} className="bg-white rounded-xl border border-gray-200 p-6 space-y-4">
@@ -32,7 +34,7 @@ export default function LoginForm() {
         )}
         <Input
           id="email"
-          label="Email"
+          label={t('auth.email')}
           type="email"
           value={email}
           onChange={(e) => setEmail(e.target.value)}
@@ -42,7 +44,7 @@ export default function LoginForm() {
         />
         <Input
           id="password"
-          label="Password"
+          label={t('auth.password')}
           type="password"
           value={password}
           onChange={(e) => setPassword(e.target.value)}
@@ -51,14 +53,14 @@ export default function LoginForm() {
           autoComplete="current-password"
         />
         <Button type="submit" loading={loading} className="w-full" size="lg">
-          Sign In
+          {t('auth.signIn')}
         </Button>
       </form>
 
       <p className="text-center text-sm text-gray-500 mt-4">
-        Don&apos;t have an account?{' '}
+        {t('auth.noAccount')}{' '}
         <Link to="/register" className="text-primary-600 hover:underline font-medium">
-          Sign Up
+          {t('nav.signUp')}
         </Link>
       </p>
     </div>

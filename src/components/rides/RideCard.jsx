@@ -1,7 +1,10 @@
 import { Link } from 'react-router-dom';
+import { useTranslation } from 'react-i18next';
 import { formatDate, formatTime, formatPrice } from '../../lib/helpers';
 
 export default function RideCard({ ride }) {
+  const { t } = useTranslation();
+
   return (
     <Link
       to={`/rides/${ride.id}`}
@@ -44,7 +47,7 @@ export default function RideCard({ ride }) {
             {formatPrice(ride.price)}
           </p>
           <p className={`text-sm font-medium ${ride.available_seats > 0 ? 'text-green-600' : 'text-red-500'}`}>
-            {ride.available_seats} seat{ride.available_seats !== 1 ? 's' : ''} left
+            {t('rideCard.seat', { count: ride.available_seats })}
           </p>
         </div>
       </div>

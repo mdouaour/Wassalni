@@ -1,4 +1,5 @@
 import { useState, useEffect } from 'react';
+import { useTranslation } from 'react-i18next';
 import { useAuthStore } from '../stores/authStore';
 import { useRideStore } from '../stores/rideStore';
 import { useRatingStore } from '../stores/ratingStore';
@@ -14,6 +15,7 @@ export default function ProfilePage() {
   const { user, profile, updateProfile, loading: authLoading } = useAuthStore();
   const { rides, fetchDriverRides, loading: ridesLoading } = useRideStore();
   const { ratings, fetchUserRatings, loading: ratingsLoading } = useRatingStore();
+  const { t } = useTranslation();
   const [editing, setEditing] = useState(false);
   const [name, setName] = useState('');
   const [tab, setTab] = useState('info');
@@ -44,6 +46,12 @@ export default function ProfilePage() {
 
   const avgRating = calculateAverageRating(ratings);
 
+  const tabLabels = {
+    info: t('profile.tabs.info'),
+    rides: t('profile.tabs.rides'),
+    reviews: t('profile.tabs.reviews'),
+  };
+
   return (
     <ProtectedRoute>
       <div className="max-w-2xl mx-auto space-y-6">
@@ -71,17 +79,17 @@ export default function ProfilePage() {
 
           {/* Tabs */}
           <div className="flex gap-1 border-b border-gray-100 mb-4">
-            {['info', 'rides', 'reviews'].map((t) => (
+            {Object.entries(tabLabels).map(([key, label]) => (
               <button
-                key={t}
-                onClick={() => setTab(t)}
-                className={`px-4 py-2 text-sm font-medium capitalize border-b-2 transition-colors ${
-                  tab === t
+                key={key}
+                onClick={() => setTab(key)}
+                className={`px-4 py-2 text-sm font-medium border-b-2 transition-colors ${
+                  tab === key
                     ? 'border-primary-600 text-primary-600'
                     : 'border-transparent text-gray-500 hover:text-gray-700'
                 }`}
               >
-                {t}
+                {label}
               </button>
             ))}
           </div>
@@ -92,7 +100,9 @@ export default function ProfilePage() {
               {editing ? (
                 <div className="space-y-3">
                   <div>
-                    <label htmlFor="edit-name" className="block text-sm font-medium text-gray-700 mb-1">Name</label>
+                    <label htmlFor="edit-name" className="block text-sm font-medium text-gray-700 mb-1">
+                      {t('profile.name')}
+                    </label>
                     <input
                       id="edit-name"
                       type="text"
@@ -103,10 +113,10 @@ export default function ProfilePage() {
                   </div>
                   <div className="flex gap-2">
                     <Button onClick={handleSave} loading={authLoading} size="sm">
-                      Save
+                      {t('save')}
                     </Button>
                     <Button variant="secondary" onClick={() => setEditing(false)} size="sm">
-                      Cancel
+                      {t('cancel')}
                     </Button>
                   </div>
                 </div>
@@ -114,19 +124,19 @@ export default function ProfilePage() {
                 <div className="space-y-3">
                   <div className="flex items-center justify-between">
                     <div>
-                      <p className="text-sm text-gray-500">Name</p>
+                      <p className="text-sm text-gray-500">{t('profile.name')}</p>
                       <p className="font-medium">{profile?.name}</p>
                     </div>
                     <Button variant="ghost" size="sm" onClick={() => setEditing(true)}>
-                      Edit
+                      {t('edit')}
                     </Button>
                   </div>
                   <div>
-                    <p className="text-sm text-gray-500">Email</p>
+                    <p className="text-sm text-gray-500">{t('profile.email')}</p>
                     <p className="font-medium">{user?.email}</p>
                   </div>
                   <div>
-                    <p className="text-sm text-gray-500">Role</p>
+                    <p className="text-sm text-gray-500">{t('profile.role')}</p>
                     <p className="font-medium capitalize">{profile?.role}</p>
                   </div>
                 </div>
@@ -135,10 +145,10 @@ export default function ProfilePage() {
               {profile?.role === 'user' && (
                 <div className="border-t border-gray-100 pt-4">
                   <p className="text-sm text-gray-500 mb-2">
-                    Want to offer rides? Become a driver to publish trips.
+                    {t('profile.becomeDriverPrompt')}
                   </p>
                   <Button variant="outline" onClick={handleBecomeDriver} loading={authLoading}>
-                    🚗 Become a Driver
+                    {t('profile.becomeDriver')}
                   </Button>
                 </div>
               )}
@@ -157,7 +167,7 @@ export default function ProfilePage() {
                   ))}
                 </div>
               ) : (
-                <p className="text-gray-400 text-center py-8">No rides published yet.</p>
+                <p className="text-gray-400 text-center py-8">{t('profile.noRidesYet')}</p>
               )}
             </div>
           )}

@@ -1,6 +1,7 @@
 import { useState } from 'react';
 import { Link, useNavigate } from 'react-router-dom';
 import { useAuthStore } from '../../stores/authStore';
+import { useTranslation } from 'react-i18next';
 import Input from '../common/Input';
 import Button from '../common/Button';
 import { isValidEmail } from '../../lib/helpers';
@@ -8,17 +9,18 @@ import { isValidEmail } from '../../lib/helpers';
 export default function RegisterForm() {
   const navigate = useNavigate();
   const { signUp, loading, error, clearError } = useAuthStore();
+  const { t } = useTranslation();
   const [form, setForm] = useState({ name: '', email: '', password: '', confirmPassword: '' });
   const [errors, setErrors] = useState({});
 
   const validate = () => {
     const newErrors = {};
-    if (!form.name.trim()) newErrors.name = 'Name is required';
-    if (!form.email) newErrors.email = 'Email is required';
-    else if (!isValidEmail(form.email)) newErrors.email = 'Invalid email format';
-    if (!form.password) newErrors.password = 'Password is required';
-    else if (form.password.length < 6) newErrors.password = 'Password must be at least 6 characters';
-    if (form.password !== form.confirmPassword) newErrors.confirmPassword = 'Passwords do not match';
+    if (!form.name.trim()) newErrors.name = t('auth.nameRequired');
+    if (!form.email) newErrors.email = t('auth.emailRequired');
+    else if (!isValidEmail(form.email)) newErrors.email = t('auth.invalidEmail');
+    if (!form.password) newErrors.password = t('auth.passwordRequired');
+    else if (form.password.length < 6) newErrors.password = t('auth.passwordMinLength');
+    if (form.password !== form.confirmPassword) newErrors.confirmPassword = t('auth.passwordMismatch');
     setErrors(newErrors);
     return Object.keys(newErrors).length === 0;
   };
@@ -42,8 +44,8 @@ export default function RegisterForm() {
   return (
     <div className="max-w-md mx-auto">
       <div className="text-center mb-6">
-        <h1 className="text-2xl font-bold text-gray-800">Create Account</h1>
-        <p className="text-gray-500 mt-1">Join WASALNI and start sharing rides</p>
+        <h1 className="text-2xl font-bold text-gray-800">{t('auth.createAccount')}</h1>
+        <p className="text-gray-500 mt-1">{t('auth.createAccountSubtitle')}</p>
       </div>
 
       <form onSubmit={handleSubmit} className="bg-white rounded-xl border border-gray-200 p-6 space-y-4">
@@ -52,7 +54,7 @@ export default function RegisterForm() {
         )}
         <Input
           id="name"
-          label="Full Name"
+          label={t('auth.fullName')}
           value={form.name}
           onChange={updateField('name')}
           error={errors.name}
@@ -62,7 +64,7 @@ export default function RegisterForm() {
         />
         <Input
           id="email"
-          label="Email"
+          label={t('auth.email')}
           type="email"
           value={form.email}
           onChange={updateField('email')}
@@ -73,7 +75,7 @@ export default function RegisterForm() {
         />
         <Input
           id="password"
-          label="Password"
+          label={t('auth.password')}
           type="password"
           value={form.password}
           onChange={updateField('password')}
@@ -84,7 +86,7 @@ export default function RegisterForm() {
         />
         <Input
           id="confirmPassword"
-          label="Confirm Password"
+          label={t('auth.confirmPassword')}
           type="password"
           value={form.confirmPassword}
           onChange={updateField('confirmPassword')}
@@ -94,14 +96,14 @@ export default function RegisterForm() {
           autoComplete="new-password"
         />
         <Button type="submit" loading={loading} className="w-full" size="lg">
-          Create Account
+          {t('auth.createAccount')}
         </Button>
       </form>
 
       <p className="text-center text-sm text-gray-500 mt-4">
-        Already have an account?{' '}
+        {t('auth.alreadyAccount')}{' '}
         <Link to="/login" className="text-primary-600 hover:underline font-medium">
-          Sign In
+          {t('auth.signIn')}
         </Link>
       </p>
     </div>

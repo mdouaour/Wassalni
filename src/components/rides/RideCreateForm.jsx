@@ -2,6 +2,7 @@ import { useState } from 'react';
 import { useNavigate } from 'react-router-dom';
 import { useAuthStore } from '../../stores/authStore';
 import { useRideStore } from '../../stores/rideStore';
+import { useTranslation } from 'react-i18next';
 import CitySelect from '../common/CitySelect';
 import Input from '../common/Input';
 import Button from '../common/Button';
@@ -10,6 +11,7 @@ export default function RideCreateForm() {
   const navigate = useNavigate();
   const { user } = useAuthStore();
   const { createRide, loading, error, clearError } = useRideStore();
+  const { t } = useTranslation();
 
   const [form, setForm] = useState({
     departure_city: '',
@@ -23,18 +25,18 @@ export default function RideCreateForm() {
 
   const validate = () => {
     const newErrors = {};
-    if (!form.departure_city) newErrors.departure_city = 'Departure city is required';
-    if (!form.destination_city) newErrors.destination_city = 'Destination city is required';
+    if (!form.departure_city) newErrors.departure_city = t('createRide.departureCityRequired');
+    if (!form.destination_city) newErrors.destination_city = t('createRide.destinationCityRequired');
     if (form.departure_city && form.departure_city === form.destination_city) {
-      newErrors.destination_city = 'Destination must be different from departure';
+      newErrors.destination_city = t('createRide.differentCities');
     }
-    if (!form.departure_time) newErrors.departure_time = 'Departure time is required';
+    if (!form.departure_time) newErrors.departure_time = t('createRide.departureTimeRequired');
     if (form.departure_time && new Date(form.departure_time) < new Date()) {
-      newErrors.departure_time = 'Departure time must be in the future';
+      newErrors.departure_time = t('createRide.departureTimeFuture');
     }
-    if (!form.price || Number(form.price) <= 0) newErrors.price = 'Valid price is required';
+    if (!form.price || Number(form.price) <= 0) newErrors.price = t('createRide.validPrice');
     if (!form.available_seats || Number(form.available_seats) < 1 || Number(form.available_seats) > 8) {
-      newErrors.available_seats = 'Seats must be between 1 and 8';
+      newErrors.available_seats = t('createRide.seatsRange');
     }
     setErrors(newErrors);
     return Object.keys(newErrors).length === 0;
@@ -76,14 +78,14 @@ export default function RideCreateForm() {
       <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
         <CitySelect
           id="departure_city"
-          label="Departure City *"
+          label={t('createRide.departureCity')}
           value={form.departure_city}
           onChange={updateField('departure_city')}
           error={errors.departure_city}
         />
         <CitySelect
           id="destination_city"
-          label="Destination City *"
+          label={t('createRide.destinationCity')}
           value={form.destination_city}
           onChange={updateField('destination_city')}
           error={errors.destination_city}
@@ -92,7 +94,7 @@ export default function RideCreateForm() {
 
       <Input
         id="departure_time"
-        label="Departure Date & Time *"
+        label={t('createRide.departureDateTime')}
         type="datetime-local"
         value={form.departure_time}
         onChange={updateField('departure_time')}
@@ -103,7 +105,7 @@ export default function RideCreateForm() {
       <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
         <Input
           id="price"
-          label="Price per Seat (DA) *"
+          label={t('createRide.pricePerSeat')}
           type="number"
           value={form.price}
           onChange={updateField('price')}
@@ -113,12 +115,12 @@ export default function RideCreateForm() {
         />
         <Input
           id="available_seats"
-          label="Available Seats *"
+          label={t('createRide.availableSeats')}
           type="number"
           value={form.available_seats}
           onChange={updateField('available_seats')}
           error={errors.available_seats}
-          placeholder="1-8"
+          placeholder={t('createRide.seatsPlaceholder')}
           min="1"
           max="8"
         />
@@ -126,13 +128,13 @@ export default function RideCreateForm() {
 
       <div>
         <label htmlFor="notes" className="block text-sm font-medium text-gray-700 mb-1">
-          Notes (optional)
+          {t('createRide.notes')}
         </label>
         <textarea
           id="notes"
           value={form.notes}
           onChange={updateField('notes')}
-          placeholder="e.g. Pick-up point, luggage space, smoking policy..."
+          placeholder={t('createRide.notesPlaceholder')}
           rows={3}
           maxLength={500}
           className="w-full rounded-lg border border-gray-300 px-3 py-2 text-gray-900 placeholder:text-gray-400 focus:outline-none focus:ring-2 focus:ring-primary-500"
@@ -140,7 +142,7 @@ export default function RideCreateForm() {
       </div>
 
       <Button type="submit" loading={loading} size="lg" className="w-full">
-        🚗 Publish Ride
+        {t('createRide.publish')}
       </Button>
     </form>
   );

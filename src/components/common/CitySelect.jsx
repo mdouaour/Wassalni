@@ -1,3 +1,4 @@
+import { useTranslation } from 'react-i18next';
 import { ALGERIAN_CITIES } from '../../lib/constants';
 
 export default function CitySelect({
@@ -6,9 +7,12 @@ export default function CitySelect({
   onChange,
   error,
   id,
-  placeholder = 'Select a city',
+  placeholder,
   className = '',
 }) {
+  const { t } = useTranslation();
+  const placeholderText = placeholder ?? t('city.select');
+
   return (
     <div className={className}>
       {label && (
@@ -26,7 +30,7 @@ export default function CitySelect({
           ${error ? 'border-red-500 focus:ring-red-500' : 'border-gray-300'}
         `}
       >
-        <option value="">{placeholder}</option>
+        <option value="">{placeholderText}</option>
         {ALGERIAN_CITIES.map((city) => (
           <option key={city} value={city}>
             {city}

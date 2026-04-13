@@ -1,16 +1,18 @@
 import { useEffect, useState } from 'react';
+import { Link } from 'react-router-dom';
+import { useTranslation } from 'react-i18next';
 import { useAuthStore } from '../stores/authStore';
 import { useBookingStore } from '../stores/bookingStore';
 import ProtectedRoute from '../components/auth/ProtectedRoute';
 import BookingCard from '../components/booking/BookingCard';
 import LoadingSpinner from '../components/common/LoadingSpinner';
 import EmptyState from '../components/common/EmptyState';
-import { Link } from 'react-router-dom';
 import Button from '../components/common/Button';
 
 export default function BookingsPage() {
   const { user } = useAuthStore();
   const { bookings, loading, fetchUserBookings, cancelBooking } = useBookingStore();
+  const { t } = useTranslation();
   const [cancellingId, setCancellingId] = useState(null);
 
   useEffect(() => {
@@ -29,8 +31,8 @@ export default function BookingsPage() {
     <ProtectedRoute>
       <div className="space-y-6">
         <div>
-          <h1 className="text-2xl font-bold text-gray-800 mb-1">My Bookings</h1>
-          <p className="text-gray-500">Manage your ride reservations</p>
+          <h1 className="text-2xl font-bold text-gray-800 mb-1">{t('bookings.title')}</h1>
+          <p className="text-gray-500">{t('bookings.subtitle')}</p>
         </div>
 
         {loading ? (
@@ -49,11 +51,11 @@ export default function BookingsPage() {
         ) : (
           <EmptyState
             icon="📋"
-            title="No bookings yet"
-            message="You haven't booked any rides. Search for available rides to get started."
+            title={t('bookings.noBookingsTitle')}
+            message={t('bookings.noBookingsMessage')}
             action={
               <Link to="/rides">
-                <Button>Find Rides</Button>
+                <Button>{t('bookings.findRides')}</Button>
               </Link>
             }
           />

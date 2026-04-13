@@ -1,5 +1,13 @@
+import { useTranslation } from 'react-i18next';
 import { formatDate, formatTime, formatPrice } from '../../lib/helpers';
 import Button from '../common/Button';
+
+const statusKeys = {
+  pending: 'bookingCard.status.pending',
+  confirmed: 'bookingCard.status.confirmed',
+  cancelled: 'bookingCard.status.cancelled',
+  completed: 'bookingCard.status.completed',
+};
 
 const statusColors = {
   pending: 'bg-yellow-100 text-yellow-700',
@@ -9,6 +17,7 @@ const statusColors = {
 };
 
 export default function BookingCard({ booking, onCancel, cancelling }) {
+  const { t } = useTranslation();
   const ride = booking.ride;
 
   return (
@@ -23,9 +32,14 @@ export default function BookingCard({ booking, onCancel, cancelling }) {
                 <span className="font-semibold text-gray-800">{ride.destination_city}</span>
               </div>
               <div className="text-sm text-gray-500 space-y-1">
-                <p>📅 {formatDate(ride.departure_time)} at {formatTime(ride.departure_time)}</p>
+                <p>
+                  📅 {formatDate(ride.departure_time)} {t('bookingCard.at')}{' '}
+                  {formatTime(ride.departure_time)}
+                </p>
                 <p>💰 {formatPrice(ride.price)}</p>
-                {ride.driver && <p>🧑 Driver: {ride.driver.name}</p>}
+                {ride.driver && (
+                  <p>🧑 {t('bookingCard.driver')}: {ride.driver.name}</p>
+                )}
               </div>
             </>
           )}
@@ -33,7 +47,7 @@ export default function BookingCard({ booking, onCancel, cancelling }) {
 
         <div className="text-right flex-shrink-0">
           <span className={`inline-block px-2 py-1 rounded-full text-xs font-medium ${statusColors[booking.status]}`}>
-            {booking.status}
+            {t(statusKeys[booking.status] ?? booking.status)}
           </span>
         </div>
       </div>
@@ -46,7 +60,7 @@ export default function BookingCard({ booking, onCancel, cancelling }) {
             loading={cancelling}
             onClick={() => onCancel(booking.id, ride?.id)}
           >
-            Cancel Booking
+            {t('bookingCard.cancelBooking')}
           </Button>
         </div>
       )}
